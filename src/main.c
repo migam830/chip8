@@ -6,7 +6,7 @@ int main() {
     SDL_Event event;
 
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_CreateWindowAndRenderer("CHIP-8 emulator", 500, 500, SDL_WINDOW_RESIZABLE, &window, &renderer);
+    SDL_CreateWindowAndRenderer("CHIP-8 emulator", 640, 320, SDL_WINDOW_RESIZABLE, &window, &renderer);
 
     while (1) {
         SDL_PollEvent(&event);
@@ -22,9 +22,17 @@ int main() {
         SDL_FRect rect;
         rect.x = 0;
         rect.y = 0;
-        rect.w = 100;
-        rect.h = 100;
-        SDL_RenderFillRect(renderer, &rect);
+        rect.w = 10;
+        rect.h = 10;
+
+        while (rect.x < 640) {
+            while (rect.y < 320) {
+                SDL_RenderFillRect(renderer, &rect);
+                rect.y += 10;
+            }
+            rect.y = 0;
+            rect.x += 10;
+        }
 
         SDL_RenderPresent(renderer);
     }
