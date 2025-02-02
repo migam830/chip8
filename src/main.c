@@ -82,11 +82,11 @@ void updateKeyboard(int *keyboard, int value, SDL_Scancode scanCode) {
 int main() {
     // Memory and stack (addresses are integers but store hex values)
     unsigned char memory[4096] = { 0 };
-    int stack[16] = { 0 };
+    unsigned short int stack[16] = { 0x0000 };
 
     // Registers
-    int programCounter = 0;
-    int indexRegister = 0;
+    unsigned short int programCounter = 0x0000;
+    unsigned short int indexRegister = 0x0000;
     unsigned char V0 = 0x00;
     unsigned char V1 = 0x00;
     unsigned char V2 = 0x00;
@@ -155,8 +155,23 @@ int main() {
 
 
         // Fetch-decode-execute cycle
-        int currentInstruction = programCounter;
+
+        // Fetch
+        unsigned short int instruction = (memory[programCounter] << 8) | memory[programCounter+1];
         programCounter += 2;
+
+        // Decode + execute
+        
+        // Meanings of different nibbles
+        unsigned char X = (instruction & 0x0F00) >> 8;
+        unsigned char Y = (instruction & 0x00F0) >> 4;
+        unsigned char N = instruction & 0x000F;
+        unsigned char NN = instruction & 0x00FF;
+        unsigned short int NNN = instruction & 0x0FFF;
+
+        switch ((instruction & 0xF000) >> 12) {
+
+        }
     }
 
     SDL_DestroyRenderer(renderer);
