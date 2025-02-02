@@ -80,9 +80,29 @@ void updateKeyboard(int *keyboard, int value, SDL_Scancode scanCode) {
 }
 
 int main() {
-    // Memory and stack
+    // Memory and stack (addresses are integers but store hex values)
     unsigned char memory[4096] = { 0 };
-    unsigned char stack[16] = { 0 };
+    int stack[16] = { 0 };
+
+    // Registers
+    int programCounter = 0;
+    int indexRegister = 0;
+    unsigned char V0 = 0x00;
+    unsigned char V1 = 0x00;
+    unsigned char V2 = 0x00;
+    unsigned char V3 = 0x00;
+    unsigned char V4 = 0x00;
+    unsigned char V5 = 0x00;
+    unsigned char V6 = 0x00;
+    unsigned char V7 = 0x00;
+    unsigned char V8 = 0x00;
+    unsigned char V9 = 0x00;
+    unsigned char VA = 0x00;
+    unsigned char VB = 0x00;
+    unsigned char VC = 0x00;
+    unsigned char VD = 0x00;
+    unsigned char VE = 0x00;
+    unsigned char VF = 0x00;
 
 
     // Timers
@@ -114,7 +134,8 @@ int main() {
             if (event.type == SDL_EVENT_QUIT) {
                 running = 0;
             }
-            // Keyboard keys (add more when needed)
+            
+            // Update keyboard
             if (event.type == SDL_EVENT_KEY_DOWN) {
                 updateKeyboard(keyboard, 1, event.key.scancode);
             }
@@ -123,8 +144,19 @@ int main() {
             }
         }
 
-        SDL_Delay(50);
+        SDL_Delay(10);
         SDLRender(renderer);
+        int i;
+        for (i = 0; i < 16; i++) {
+            if (keyboard[i] == 1) {
+                printf("%x pressed\n", i);
+            }
+        }
+
+
+        // Fetch-decode-execute cycle
+        int currentInstruction = programCounter;
+        programCounter += 2;
     }
 
     SDL_DestroyRenderer(renderer);
