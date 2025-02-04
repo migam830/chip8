@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdio.h>
 
-void SDLRender(SDL_Renderer *renderer) {
+void SDLRender(SDL_Renderer *renderer, int *pixels) {
         SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
         SDL_RenderClear(renderer);
 
@@ -16,7 +16,8 @@ void SDLRender(SDL_Renderer *renderer) {
 
         while (rect.x < 640) {
             while (rect.y < 320) {
-                SDL_RenderFillRect(renderer, &rect);
+                if (pixels[((int)rect.y / 10) + (32 * ((int)rect.x) / 10)] == 1)
+                    SDL_RenderFillRect(renderer, &rect);
                 rect.y += 10;
             }
             rect.y = 0;
@@ -117,6 +118,9 @@ int main() {
     SDL_Renderer *renderer;
     SDL_Event event;
 
+    // Pixels on screen
+    int pixels[2048] = {1};
+
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer("CHIP-8 emulator", 640, 320, SDL_WINDOW_RESIZABLE, &window, &renderer);
 
@@ -145,7 +149,7 @@ int main() {
         }
 
         SDL_Delay(10);
-        SDLRender(renderer);
+        SDLRender(renderer, pixels);
         int i;
         for (i = 0; i < 16; i++) {
             if (keyboard[i] == 1) {
@@ -158,6 +162,7 @@ int main() {
 
         // Fetch
         unsigned short int instruction = (memory[programCounter] << 8) | memory[programCounter+1];
+        // unsigned short int instruction = 0x00E0;
         programCounter += 2;
 
         // Decode + execute
@@ -169,8 +174,20 @@ int main() {
         unsigned char NN = instruction & 0x00FF;
         unsigned short int NNN = instruction & 0x0FFF;
 
+        // Execute instruction based on value of first nibble
         switch ((instruction & 0xF000) >> 12) {
-
+            case 0x0:
+                if (instruction == 0x00E0) {
+                    // Clear screen
+                    int i;
+                    for (i = 0; i < 2048; i++) {
+                        pixels[i] = 0;
+                    }
+                }
+                break;
+            case 0x1:
+                programCounter = NNN;
+                break;
         }
     }
 
