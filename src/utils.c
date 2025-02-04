@@ -1,4 +1,5 @@
 #include <SDL3/SDL.h>
+#include "utils.h"
 
 void SDLRender(SDL_Renderer *renderer, int *pixels) {
         SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
