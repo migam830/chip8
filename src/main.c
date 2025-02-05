@@ -11,22 +11,7 @@ int main() {
     // Registers
     unsigned short int programCounter = 0x0000;
     unsigned short int indexRegister = 0x0000;
-    unsigned char V0 = 0x00;
-    unsigned char V1 = 0x00;
-    unsigned char V2 = 0x00;
-    unsigned char V3 = 0x00;
-    unsigned char V4 = 0x00;
-    unsigned char V5 = 0x00;
-    unsigned char V6 = 0x00;
-    unsigned char V7 = 0x00;
-    unsigned char V8 = 0x00;
-    unsigned char V9 = 0x00;
-    unsigned char VA = 0x00;
-    unsigned char VB = 0x00;
-    unsigned char VC = 0x00;
-    unsigned char VD = 0x00;
-    unsigned char VE = 0x00;
-    unsigned char VF = 0x00;
+    unsigned char generalRegisters[16] = { 0x00 };
 
 
     // Timers
