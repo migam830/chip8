@@ -27,7 +27,7 @@ int main() {
     SDL_Event event;
 
     // Pixels on screen
-    int pixels[2048] = {1};
+    int pixels[2048] = { 0 };
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer("CHIP-8 emulator", 640, 320, SDL_WINDOW_RESIZABLE, &window, &renderer);
@@ -94,6 +94,15 @@ int main() {
                 break;
             case 0x1:
                 programCounter = NNN;
+                break;
+            case 0x6:
+                generalRegisters[X] = NN;
+                break;
+            case 0x7:
+                generalRegisters[X] += NN;
+                break;
+            case 0xA:
+                indexRegister = NNN;
                 break;
         }
     }
