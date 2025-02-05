@@ -70,7 +70,6 @@ int main() {
 
         // Fetch
         unsigned short int instruction = (memory[programCounter] << 8) | memory[programCounter+1];
-        // unsigned short int instruction = 0x00E0;
         programCounter += 2;
 
         // Decode + execute
