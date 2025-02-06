@@ -4,5 +4,6 @@
 
 void SDLRender(SDL_Renderer *renderer, int *pixels);
 void updateKeyboard(int *keyboard, int value, SDL_Scancode scanCode);
+int loadFile(char *fileName, unsigned char *memory);
 
 #endif

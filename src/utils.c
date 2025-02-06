@@ -1,29 +1,56 @@
 #include <SDL3/SDL.h>
+#include <stdio.h>
 #include "utils.h"
 
+int loadFile(char *fileName, unsigned char *memory) {
+    // Load program into memory
+    FILE *filePtr = fopen(fileName, "r");
+
+    if (filePtr == NULL) {
+        return 1;
+    }
+
+    // Size hardcoded for IBM logo, change later
+    unsigned char fileData[132];
+    int memLocation = 512;
+
+    while (fread(fileData, 1, 132, filePtr) == 1) {
+        printf("test");
+    }
+    fgetc(filePtr);
+
+    fclose(filePtr);
+    
+    int i;
+    for (i = 0; i < 132; i++) {
+        memory[i+512] = fileData[i];
+    }
+    return 0;
+}
+
 void SDLRender(SDL_Renderer *renderer, int *pixels) {
-        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
-        SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+    SDL_RenderClear(renderer);
 
-        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xF0, 0x00);
-        // Draw pixels
-        SDL_FRect rect;
-        rect.x = 0;
-        rect.y = 0;
-        rect.w = 10;
-        rect.h = 10;
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xF0, 0x00);
+    // Draw pixels
+    SDL_FRect rect;
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = 10;
+    rect.h = 10;
 
-        while (rect.x < 640) {
-            while (rect.y < 320) {
-                if (pixels[((int)rect.y / 10) + (32 * ((int)rect.x) / 10)] == 1)
-                    SDL_RenderFillRect(renderer, &rect);
-                rect.y += 10;
-            }
-            rect.y = 0;
-            rect.x += 10;
+    while (rect.x < 640) {
+        while (rect.y < 320) {
+            if (pixels[((int)rect.y / 10) + (32 * ((int)rect.x) / 10)] == 1)
+                SDL_RenderFillRect(renderer, &rect);
+            rect.y += 10;
         }
+        rect.y = 0;
+        rect.x += 10;
+    }
 
-        SDL_RenderPresent(renderer);
+    SDL_RenderPresent(renderer);
 }
 
 void updateKeyboard(int *keyboard, int value, SDL_Scancode scanCode) {
