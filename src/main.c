@@ -8,8 +8,13 @@ int main() {
     unsigned char memory[4096] = { 0 };
     unsigned short int stack[16] = { 0x0000 };
 
+    if (loadFile("ibm-logo.ch8", memory) != 0) {
+        printf("Error loading file\n");
+        return 1;
+    }
+
     // Registers
-    unsigned short int programCounter = 0x0000;
+    unsigned short int programCounter = 0x200;
     unsigned short int indexRegister = 0x0000;
     unsigned char generalRegisters[16] = { 0x00 };
 
@@ -81,6 +86,9 @@ int main() {
         unsigned char NN = instruction & 0x00FF;
         unsigned short int NNN = instruction & 0x0FFF;
 
+        // Coordinates for draw instruction
+        int xCoord;
+        int yCoord;
         // Execute instruction based on value of first nibble
         switch ((instruction & 0xF000) >> 12) {
             case 0x0:
@@ -104,6 +112,37 @@ int main() {
             case 0xA:
                 indexRegister = NNN;
                 break;
+            case 0xD:
+                xCoord = generalRegisters[X] % 64;
+                yCoord = generalRegisters[Y] % 32;
+                generalRegisters[15] = 0x00;
+                int i;
+                for (i = 0; i < N; i++) {
+                    unsigned char byte = memory[indexRegister+i];
+                    while (byte > 0x00) {
+                        unsigned char memoryPixel = byte >> 7;
+                        int screenPosition = yCoord + (32 * (xCoord));
+                        if (memoryPixel == 0x01 && pixels[screenPosition] == 1) {
+                            pixels[screenPosition] = 0;
+                            generalRegisters[15] = 1;
+                        }
+                        else if (memoryPixel == 0x01 && pixels[screenPosition] == 0) {
+                            pixels[screenPosition] = 1;
+                        }
+                        byte <<= 1;
+                        xCoord++;
+                        if (xCoord >= 64) {
+                            break;
+                        }
+                    }
+                    yCoord++;
+                    if (yCoord >= 32) {
+                        break;
+                    }
+                }
+                break;
+            default:
+                printf("Unknown instruction\n");
         }
     }
 
