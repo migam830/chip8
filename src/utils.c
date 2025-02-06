@@ -14,9 +14,7 @@ int loadFile(char *fileName, unsigned char *memory) {
     unsigned char fileData[132];
     int memLocation = 512;
 
-    while (fread(fileData, 1, 132, filePtr) == 1) {
-        printf("test");
-    }
+    fread(fileData, 1, 132, filePtr);
     fgetc(filePtr);
 
     fclose(filePtr);
