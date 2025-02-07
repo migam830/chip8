@@ -10,8 +10,12 @@ int loadFile(char *fileName, unsigned char *memory) {
         return 1;
     }
 
-    // Size hardcoded for IBM logo, change later
-    unsigned char fileData[132];
+    // Get file size
+    fseek(filePtr, 0L, SEEK_END);
+    long int fileSize = ftell(filePtr);
+    fseek(filePtr, 0L, SEEK_SET);
+
+    unsigned char fileData[fileSize];
     int memLocation = 512;
 
     fread(fileData, 1, 132, filePtr);
