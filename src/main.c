@@ -87,8 +87,8 @@ int main() {
         unsigned short int NNN = instruction & 0x0FFF;
 
         // Coordinates for draw instruction
-        int xCoord;
-        int yCoord;
+        unsigned char xCoord;
+        unsigned char yCoord;
         // Execute instruction based on value of first nibble
         switch ((instruction & 0xF000) >> 12) {
             case 0x0:
@@ -119,9 +119,10 @@ int main() {
                 int i;
                 for (i = 0; i < N; i++) {
                     unsigned char byte = memory[indexRegister+i];
-                    while (byte > 0x00) {
+                    int j;
+                    for (j = 0; j < 8; j++) {
                         unsigned char memoryPixel = byte >> 7;
-                        int screenPosition = yCoord + (32 * (xCoord));
+                        int screenPosition = yCoord + (32 * xCoord);
                         if (memoryPixel == 0x01 && pixels[screenPosition] == 1) {
                             pixels[screenPosition] = 0;
                             generalRegisters[15] = 1;
@@ -135,6 +136,7 @@ int main() {
                             break;
                         }
                     }
+                    xCoord = generalRegisters[X] % 64;
                     yCoord++;
                     if (yCoord >= 32) {
                         break;
