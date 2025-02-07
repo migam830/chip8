@@ -107,3 +107,26 @@ void updateKeyboard(int *keyboard, int value, SDL_Scancode scanCode) {
             break;
     }
 }
+
+int pushStack(unsigned short int value, unsigned short int *stack, int stackSize) {
+    int i;
+    for (i = stackSize - 1; i >= 0; i--) {
+        if (stack[i] == 0x0000) {
+            stack[i] = value;
+            return 0;
+        }
+    }
+    return 1;
+}
+
+unsigned short int popStack(unsigned short int *stack, int stackSize) {
+    int i;
+    for (i = 0; i < stackSize; i++) {
+        if (stack[i] != 0x0000) {
+            unsigned short int temp = stack[i];
+            stack[i] = 0x0000;
+            return temp;
+        }
+    }
+    return 0x0000;
+}
