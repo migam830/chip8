@@ -110,11 +110,77 @@ int main(int argc, char *argv[]) {
                 pushStack(programCounter, stack, 16);
                 programCounter = NNN;
                 break;
+            case 0x3:
+                if (generalRegisters[X] == NN) {
+                    programCounter += 2;
+                }
+                break;
+            case 0x4:
+                if (generalRegisters[X] != NN) {
+                    programCounter += 2;
+                }
+                break;
+            case 0x5:
+                // Instruction should end in 0
+                if ((generalRegisters[X] == generalRegisters[Y]) && (N == 0x0)) {
+                    programCounter += 2;
+                }
+                break;
             case 0x6:
                 generalRegisters[X] = NN;
                 break;
             case 0x7:
                 generalRegisters[X] += NN;
+                break;
+            case 0x8:
+                switch (N) {
+                    case 0x0:
+                        generalRegisters[X] = generalRegisters[Y];
+                        break;
+                    case 0x1:
+                        generalRegisters[X] = generalRegisters[X] | generalRegisters[Y];
+                        break;
+                    case 0x2:
+                        generalRegisters[X] = generalRegisters[X] & generalRegisters[Y];
+                        break;
+                    case 0x3:
+                        generalRegisters[X] = generalRegisters[X] ^ generalRegisters[Y];
+                        break;
+                    case 0x4:
+                        if (generalRegisters[X] + generalRegisters[Y] > 255) {
+                            generalRegisters[15] = 0x1;
+                        }
+                        else {
+                            generalRegisters[15] = 0x0;
+                        }
+                        generalRegisters[X] = generalRegisters[X] + generalRegisters[Y];
+                        break;
+                    case 0x5:
+                        if (generalRegisters[X] > generalRegisters[Y]) {
+                            generalRegisters[15] = 1;
+                        }
+                        else {
+                            generalRegisters[15] = 0;
+                        }
+                            
+                        generalRegisters[X] = generalRegisters[X] - generalRegisters[Y];
+                        break;
+                    case 0x7:
+                        if (generalRegisters[Y] > generalRegisters[X]) {
+                            generalRegisters[15] = 1;
+                        }
+                        else {
+                            generalRegisters[15] = 0;
+                        }
+                            
+                        generalRegisters[X] = generalRegisters[Y] - generalRegisters[X];
+                        break;
+                }
+                break;
+            case 0x9:
+                if ((generalRegisters[X] != generalRegisters[Y]) && (N == 0x0)) {
+                    programCounter += 2;
+                }
                 break;
             case 0xA:
                 indexRegister = NNN;
