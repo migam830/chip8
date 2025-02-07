@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include "utils.h"
 
-int main() {
+int main(int argc, char *argv[]) {
     // Memory and stack (addresses are integers but store hex values)
     unsigned char memory[4096] = { 0 };
     unsigned short int stack[16] = { 0x0000 };
 
-    if (loadFile("ibm-logo.ch8", memory) != 0) {
+    if (loadFile(argv[1], memory) != 0) {
         printf("Error loading file\n");
         return 1;
     }

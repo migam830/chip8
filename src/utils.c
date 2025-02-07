@@ -24,7 +24,7 @@ int loadFile(char *fileName, unsigned char *memory) {
     fclose(filePtr);
     
     int i;
-    for (i = 0; i < 132; i++) {
+    for (i = 0; i < fileSize; i++) {
         memory[i+512] = fileData[i];
     }
     return 0;
