@@ -99,8 +99,15 @@ int main(int argc, char *argv[]) {
                         pixels[i] = 0;
                     }
                 }
+                else if (instruction == 0x00EE) {
+                    programCounter = popStack(stack, 16);
+                }
                 break;
             case 0x1:
+                programCounter = NNN;
+                break;
+            case 0x2:
+                pushStack(programCounter, stack, 16);
                 programCounter = NNN;
                 break;
             case 0x6:
