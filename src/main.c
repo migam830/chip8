@@ -287,6 +287,56 @@ int main(int argc, char *argv[]) {
                 else if (NN == 0x18) {
                     soundTimer = generalRegisters[X];
                 }
+                // Add to index
+                else if (NN == 0x1E) {
+                    indexRegister += generalRegisters[X];
+                }
+                // Get key
+                else if (NN == 0x0A) {
+                    int i;
+                    for (i = 0; i < 16; i++) {
+                        if (keyboard[i] == 1) {
+                            generalRegisters[X] = (unsigned char)i;
+                            programCounter += 2;
+                        }
+                    }
+                    programCounter -= 2;
+                }
+                // Font character
+                else if (NN == 0x29) {
+                    indexRegister = generalRegisters[X] * 5;
+                }
+                // Binary-coded decimal conversion
+                else if (NN == 0x33) {
+                    if (generalRegisters[X] < 10) {
+                        memory[indexRegister] = X;
+                    }
+                    else if (generalRegisters[X] < 100) {
+                        memory[indexRegister] = X % 100;
+                        memory[indexRegister + 1] = X % 10;
+                    }
+                    else {
+                        memory[indexRegister] = X % 1000;
+                        memory[indexRegister + 1] = X % 100;
+                        memory[indexRegister + 2] = X % 10;
+                    }
+                }
+                // Store and load memory
+                else if (NN == 0x55) {
+                    int i;
+                    for (i = 0; i <= X; i++) {
+                        memory[indexRegister + i] = generalRegisters[i];
+                    }
+                }
+                else if (NN == 0x65) {
+                    int i;
+                    for (int i = 0; i <= X; i++) {
+                        generalRegisters[i] = memory[indexRegister + i];
+                    }
+                }
+                else {
+                    printf("Invalid instruction: %x\n", instruction);
+                }
                 break;
             default:
                 printf("Invalid instruction: %x\n", instruction);
