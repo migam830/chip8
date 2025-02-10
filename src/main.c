@@ -110,6 +110,10 @@ int main(int argc, char *argv[]) {
         unsigned char NN = instruction & 0x00FF;
         unsigned short int NNN = instruction & 0x0FFF;
 
+        // Contents of X and Y
+        unsigned char xContents = generalRegisters[X];
+        unsigned char yContents = generalRegisters[Y];
+
         // Coordinates for draw instruction
         unsigned char xCoord;
         unsigned char yCoord;
@@ -179,51 +183,50 @@ int main(int argc, char *argv[]) {
                         generalRegisters[X] = generalRegisters[X] ^ generalRegisters[Y];
                         break;
                     case 0x4:
-                        if (generalRegisters[X] + generalRegisters[Y] > 255) {
+                        generalRegisters[X] = generalRegisters[X] + generalRegisters[Y];
+                        if (xContents + yContents > 255) {
                             generalRegisters[15] = 0x1;
                         }
                         else {
                             generalRegisters[15] = 0x0;
                         }
-                        generalRegisters[X] = generalRegisters[X] + generalRegisters[Y];
                         break;
                     case 0x5:
-                        if (generalRegisters[X] > generalRegisters[Y]) {
+                        generalRegisters[X] = generalRegisters[X] - generalRegisters[Y];
+                        if (xContents >= yContents) {
                             generalRegisters[15] = 1;
                         }
                         else {
                             generalRegisters[15] = 0;
                         }
-                            
-                        generalRegisters[X] = generalRegisters[X] - generalRegisters[Y];
                         break;
                     case 0x6:
-                        if ((generalRegisters[X] & 0x1) == 0x1) {
+                        generalRegisters[X] >>= 1;
+                        if ((xContents & 0x1) == 0x1) {
                             generalRegisters[15] = 1;
                         }
                         else {
                             generalRegisters[15] = 0;
                         }
-                        generalRegisters[X] >>= 1;
                         break;
                     case 0x7:
-                        if (generalRegisters[Y] > generalRegisters[X]) {
-                            generalRegisters[15] = 1;
-                        }
-                        else {
-                            generalRegisters[15] = 0;
-                        }
                             
                         generalRegisters[X] = generalRegisters[Y] - generalRegisters[X];
-                        break;
-                    case 0xE:
-                        if ((generalRegisters[X] & 0x1) == 0x1) {
+                        if (yContents >= xContents) {
                             generalRegisters[15] = 1;
                         }
                         else {
                             generalRegisters[15] = 0;
                         }
+                        break;
+                    case 0xE:
                         generalRegisters[X] <<= 1;
+                        if ((xContents & 0x80) == 0x80) {
+                            generalRegisters[15] = 1;
+                        }
+                        else {
+                            generalRegisters[15] = 0;
+                        }
                         break;
                     default:
                         printf("Invalid instruction: %x\n", instruction);
