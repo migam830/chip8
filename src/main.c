@@ -4,9 +4,6 @@
 #include <stdlib.h>
 #include "utils.h"
 
-// Ambiguous instruction toggles
-const int SHIFT = 0;
-
 int main(int argc, char *argv[]) {
     // Memory and stack (addresses are integers but store hex values)
     unsigned char memory[4096] = { 0 };
@@ -178,9 +175,6 @@ int main(int argc, char *argv[]) {
                         generalRegisters[X] = generalRegisters[X] - generalRegisters[Y];
                         break;
                     case 0x6:
-                        if (SHIFT == 1) {
-                            generalRegisters[X] = generalRegisters[Y];
-                        }
                         if ((generalRegisters[X] & 0x1) == 0x1) {
                             generalRegisters[15] = 1;
                         }
@@ -200,9 +194,6 @@ int main(int argc, char *argv[]) {
                         generalRegisters[X] = generalRegisters[Y] - generalRegisters[X];
                         break;
                     case 0xE:
-                        if (SHIFT == 1) {
-                            generalRegisters[X] = generalRegisters[Y];
-                        }
                         if ((generalRegisters[X] & 0x1) == 0x1) {
                             generalRegisters[15] = 1;
                         }
