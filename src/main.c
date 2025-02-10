@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 #include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "utils.h"
 
 // Ambiguous instruction toggles
@@ -92,6 +93,11 @@ int main(int argc, char *argv[]) {
         // Coordinates for draw instruction
         unsigned char xCoord;
         unsigned char yCoord;
+
+        // For use with random instruction
+        srand(time(NULL));
+        int randomNum = rand();
+
         // Execute instruction based on value of first nibble
         switch ((instruction & 0xF000) >> 12) {
             case 0x0:
@@ -220,6 +226,15 @@ int main(int argc, char *argv[]) {
             case 0xA:
                 indexRegister = NNN;
                 break;
+            case 0xB:
+                // Branch with offset
+                programCounter = NNN + generalRegisters[0];
+                break;
+            case 0xC:
+                // Random number
+                generalRegisters[X] = randomNum & NN;
+                printf("%x", randomNum & NN);
+                break;
             case 0xD:
                 xCoord = generalRegisters[X] % 64;
                 yCoord = generalRegisters[Y] % 32;
@@ -249,6 +264,28 @@ int main(int argc, char *argv[]) {
                     if (yCoord >= 32) {
                         break;
                     }
+                }
+                break;
+            case 0xE:
+                if (NN == 0x9E && keyboard[generalRegisters[X]] == 1) {
+                    programCounter += 2;
+                    printf("%x key pressed, program counter incremented\n", keyboard[generalRegisters[X]]);
+                }
+                else if (NN == 0xA1 && keyboard[generalRegisters[X]] != 1) {
+                    programCounter += 2;
+                    printf("%x key not pressed, program counter incremented\n", keyboard[generalRegisters[X]]);
+                }
+                break;
+            case 0xF:
+                // Timers
+                if (NN == 0x07) {
+                    generalRegisters[X] = delayTimer;
+                }
+                else if (NN == 0x15) {
+                    delayTimer = generalRegisters[X];
+                }
+                else if (NN == 0x18) {
+                    soundTimer = generalRegisters[X];
                 }
                 break;
             default:
