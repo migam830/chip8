@@ -308,17 +308,18 @@ int main(int argc, char *argv[]) {
                 }
                 // Binary-coded decimal conversion
                 else if (NN == 0x33) {
-                    if (generalRegisters[X] < 10) {
-                        memory[indexRegister] = X;
+                    unsigned char num = generalRegisters[X];
+                    if (num < 10) {
+                        memory[indexRegister] = num;
                     }
-                    else if (generalRegisters[X] < 100) {
-                        memory[indexRegister] = X % 100;
-                        memory[indexRegister + 1] = X % 10;
+                    else if (num < 100) {
+                        memory[indexRegister] = (int)(num / 10);
+                        memory[indexRegister + 1] = num % 10;
                     }
                     else {
-                        memory[indexRegister] = X % 1000;
-                        memory[indexRegister + 1] = X % 100;
-                        memory[indexRegister + 2] = X % 10;
+                        memory[indexRegister] = (int)(num / 100);
+                        memory[indexRegister + 1] = (int)((num / 10) % 10);
+                        memory[indexRegister + 2] = num % 10;
                     }
                 }
                 // Store and load memory
