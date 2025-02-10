@@ -323,18 +323,23 @@ int main(int argc, char *argv[]) {
                 // Binary-coded decimal conversion
                 else if (NN == 0x33) {
                     unsigned char num = generalRegisters[X];
+                    printf("Num: %d\n", num);
                     if (num < 10) {
-                        memory[indexRegister] = num;
+                        memory[indexRegister] = 0;
+                        memory[indexRegister+1] = 0;
+                        memory[indexRegister+2] = num;
                     }
                     else if (num < 100) {
-                        memory[indexRegister] = (int)(num / 10);
-                        memory[indexRegister + 1] = num % 10;
+                        memory[indexRegister] = 0;
+                        memory[indexRegister + 1] = (int)(num / 10);
+                        memory[indexRegister + 2] = num % 10;
                     }
                     else {
                         memory[indexRegister] = (int)(num / 100);
                         memory[indexRegister + 1] = (int)((num / 10) % 10);
                         memory[indexRegister + 2] = num % 10;
                     }
+                    printf("%x %x %x\n", memory[indexRegister], memory[indexRegister+1], memory[indexRegister+2]);
                 }
                 // Store and load memory
                 else if (NN == 0x55) {
