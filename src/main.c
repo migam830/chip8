@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include "utils.h"
 
+// Ambiguous instruction toggles
+const int SHIFT = 0;
+
 int main(int argc, char *argv[]) {
     // Memory and stack (addresses are integers but store hex values)
     unsigned char memory[4096] = { 0 };
@@ -125,6 +128,9 @@ int main(int argc, char *argv[]) {
                 if ((generalRegisters[X] == generalRegisters[Y]) && (N == 0x0)) {
                     programCounter += 2;
                 }
+                else if (N != 0x00) {
+                    printf("Invalid instruction: %x\n", instruction);
+                }
                 break;
             case 0x6:
                 generalRegisters[X] = NN;
@@ -165,6 +171,18 @@ int main(int argc, char *argv[]) {
                             
                         generalRegisters[X] = generalRegisters[X] - generalRegisters[Y];
                         break;
+                    case 0x6:
+                        if (SHIFT == 1) {
+                            generalRegisters[X] = generalRegisters[Y];
+                        }
+                        if ((generalRegisters[X] & 0x1) == 0x1) {
+                            generalRegisters[15] = 1;
+                        }
+                        else {
+                            generalRegisters[15] = 0;
+                        }
+                        generalRegisters[X] >>= 1;
+                        break;
                     case 0x7:
                         if (generalRegisters[Y] > generalRegisters[X]) {
                             generalRegisters[15] = 1;
@@ -175,11 +193,28 @@ int main(int argc, char *argv[]) {
                             
                         generalRegisters[X] = generalRegisters[Y] - generalRegisters[X];
                         break;
+                    case 0xE:
+                        if (SHIFT == 1) {
+                            generalRegisters[X] = generalRegisters[Y];
+                        }
+                        if ((generalRegisters[X] & 0x1) == 0x1) {
+                            generalRegisters[15] = 1;
+                        }
+                        else {
+                            generalRegisters[15] = 0;
+                        }
+                        generalRegisters[X] <<= 1;
+                        break;
+                    default:
+                        printf("Invalid instruction: %x\n", instruction);
                 }
                 break;
             case 0x9:
                 if ((generalRegisters[X] != generalRegisters[Y]) && (N == 0x0)) {
                     programCounter += 2;
+                }
+                else if (N != 0x00) {
+                    printf("Invalid instruction: %x\n", instruction);
                 }
                 break;
             case 0xA:
@@ -217,7 +252,7 @@ int main(int argc, char *argv[]) {
                 }
                 break;
             default:
-                printf("Unknown instruction\n");
+                printf("Invalid instruction: %x\n", instruction);
         }
     }
 
